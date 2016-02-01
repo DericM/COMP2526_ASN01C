@@ -18,9 +18,9 @@ public class Main {
         AddressBook book;
         if (args.length > 0) {
             if (args[0].compareToIgnoreCase("console") == 0) {
-                // YOUR CODE
+                ui = new ConsoleUserInterface();
             } else if (args[0].compareToIgnoreCase("gui") == 0) {
-                // YOUR CODE
+                ui = new GUI();
             }
         }
         if (ui != null) {
