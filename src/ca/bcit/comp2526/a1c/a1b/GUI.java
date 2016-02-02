@@ -18,6 +18,21 @@ import java.awt.*;
 public class GUI extends JFrame implements UserInterface {
     private AddressBook addressBook;// interface to database
     private int choice;// users choice 1-5
+    
+    
+    /** Add button. */
+    private JButton bAdd;
+    /** Delete button. */
+    private JButton bDelete;
+    /** Display All button. */
+    private JButton bDisplayAll;
+    /** Search button. */
+    private JButton bSearch;
+    /** Exit button. */
+    private JButton bExit;
+    
+    
+    
 
     /**
      * Constructor for objects of type GUI. Constructs the GUI and adds a
@@ -27,6 +42,16 @@ public class GUI extends JFrame implements UserInterface {
         setSize(400, 400);// fix window size
         setVisible(true);// make window visible
         addKeyListener(new KeyBoardInput());// listen to keyboard input
+        bAdd = new JButton("Add");
+        bDelete = new JButton("Delete");
+        bDisplayAll = new JButton("Display ALl");
+        bSearch = new JButton("Search");
+        bExit = new JButton("Exit");
+        add(bAdd);
+        add(bDelete);
+        add(bDisplayAll);
+        add(bSearch);
+        add(bExit);
     }
 
     /**
@@ -132,12 +157,13 @@ public class GUI extends JFrame implements UserInterface {
         g.setColor(c);// use that colour
         // colour in a rectangle the size of the window with that colour
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        g.setColor(Color.black);// set colour to draw with now to black
-        g.drawString("1) Add", 100, 100);
-        g.drawString("2) Delete", 100, 120);
-        g.drawString("3) Search", 100, 140);
-        g.drawString("4) Display All", 100, 160);
-        g.drawString("5) Exit", 100, 180);
+        //g.setColor(Color.black);// set colour to draw with now to black
+        //g.drawString("1) Add", 100, 100);
+        //g.drawString("2) Delete", 100, 120);
+        //g.drawString("3) Search", 100, 140);
+        //g.drawString("4) Display All", 100, 160);
+        //g.drawString("5) Exit", 100, 180);
+        
     }
 
     /**
