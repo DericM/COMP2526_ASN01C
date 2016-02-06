@@ -3,8 +3,8 @@ package ca.bcit.comp2526.a1c.a1b;
 /**
  * Main.
  * 
- * @author your name here
- * @version
+ * @author Deric
+ * @version 1.0
  */
 public class Main {
     /**

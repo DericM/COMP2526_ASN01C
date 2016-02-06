@@ -1,22 +1,40 @@
 package ca.bcit.comp2526.a1c.a1a;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Scanner;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+
 
 /**
  * Main.
  * 
- * @author your name here
- * @version
+ * @author Deric
+ * @version 1.0
  */
-public class Main {
+@SuppressWarnings("serial")
+public class Main extends JFrame{
     private String[] database;
     Scanner input;
+    private int choice;// users choice 1-5
 
+
+    /**
+     * Constructor for Main, adds a database and scanner.
+     */
     public Main() {
         database = new String[0];
         input = new Scanner(System.in);
     }
 
+    /**
+     * Adds a new entry to the database.
+     * @param name The new database entry.
+     */
     public void add(final String name) {
         String[] temp = new String[database.length + 1];
         System.arraycopy(database, 0, temp, 0, database.length);
@@ -24,6 +42,12 @@ public class Main {
         database = temp;
     }
 
+    /**
+     * Searches the database for a specific name and returns the index or -1.
+     * @param name The name to be searched for.
+     * @return The index of the name in the database, or -1 if not found.
+     */
+    @SuppressWarnings("resource")
     public int search(final String name) {
         String name2;
 
@@ -38,27 +62,46 @@ public class Main {
         return -1;
     }
 
-    public void display(int pos) {
+    /**
+     * Display the entry at the given index in the database.
+     * @param pos the index location to be displayed.
+     */
+    @SuppressWarnings("resource")
+    public String display(int pos) {
         String name, phone;
         Scanner extract = new Scanner(database[pos]);
         name = extract.next();
         phone = extract.next();
-        System.out.printf("%-20s%-15s\n", name, phone);
+        String msg = String.format("%-20s%-15s\n", name, phone);
+        return msg;
     }
 
-    public void displayHeading() {
+    /**
+     * Displays a heading to the screen.
+     */
+    public String displayHeading() {
         String heading1 = "Name";
         String heading2 = "Phone";
-        System.out.printf("%-20s%-15s\n", heading1, heading2);
+        String msg = String.format("%-20s%-15s\n", heading1, heading2);
+        return msg;
     }
-
+  
+    /**
+     * display the entire database.
+     */
     public void displayAll() {
-        displayHeading();
+        String msg = displayHeading() + "\n";
         for (int i = 0; i < database.length; i++) {
-            display(i);
+            msg += display(i) + "\n";
         }
+        JOptionPane.showMessageDialog(this, msg, "Address book enteries", JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * Removes a person with a given name from the database.
+     * @param name of the person to be removed.
+     * @return true if successful, false if not.
+     */
     public boolean remove(final String name) {
         int pos = search(name);
         if (pos >= 0) {
@@ -71,104 +114,189 @@ public class Main {
         return false;
     }
 
-    public void displayMenu() {
-        System.out.println("\n\n\n1) Add");
-        System.out.println("2) Delete");
-        System.out.println("3) Search");
-        System.out.println("4) Display All");
-        System.out.println("5) Exit\n");
-    }
 
-    public int getChoice() {
-        int choice = 4;// default
-        boolean done = false;
-        while (!done) {
-            System.out.print("choice? ");
-            try {
-                choice = input.nextInt();
-            } catch (Exception e) {
-                // Ignore garbage input
-            }
-            if (choice > 0 && choice <= 5)
-                done = true;
-            else
-                System.out.println("\nYour choice is incorrect, please try again");
-        }
-        return choice;
-    }
-
+    /**
+     * Reads and then adds an entry to the database.
+     */
     public void addPerson() {
-        String name = "";
-        String phone = "";
-        try {
-            System.out.print("Enter the persons name ");
-            name = input.next();
-            System.out.print("\nEnter the persons phone number ");
-            phone = input.next();
-            System.out.println("");
-        } catch (Exception e) {
-            System.out.println("\nYour input is incorrect, please try again");
-            return;
-        }
-        add(name + " " + phone);
+        add(readPerson());
     }
 
+
+    /**
+     * Reads a name and then removes an entry from the database.
+     */
     public void deletePerson() {
-        String name = "";
-        try {
-            System.out.print("Enter the persons name ");
-            name = input.next();
-            System.out.println("");
-        } catch (Exception e) {
-        }
+        String name = readName();
         if (!remove(name))
-            System.out.println("Could not delete " + name);
+            JOptionPane.showMessageDialog (this, "Could not delete " + name, "Delete", JOptionPane.PLAIN_MESSAGE);
         else
-            System.out.println(name + " was deleted successfully");
+            JOptionPane.showMessageDialog (this, name + " was deleted successfully", "Delete", JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * Reads a name and then finds a person in the database.
+     */
     public void findPerson() {
-        String name = "";
-        try {
-            System.out.print("Enter the persons name ");
-            name = input.next();
-            System.out.println("");
-        } catch (Exception e) {
-        }
+        String name = readName();
         int pos = search(name);
+        String msg;
         if (pos >= 0) {
-            displayHeading();
-            display(pos);
+            msg = displayHeading() + "\n";
+            msg += display(pos);
         } else {
-            System.out.println("No such person");
+            msg = "No such person";
         }
+        JOptionPane.showMessageDialog (this, msg, "Search", JOptionPane.PLAIN_MESSAGE);
+    }
+    
+    /**
+     * Sets defaults adds event listeners.
+     */
+    public void run(){
+        setSize(400, 400);// fix window size
+        setVisible(true);// make window visible
+        addKeyListener(new KeyBoardInput());// listen to keyboard input
     }
 
-    public void run() {
-        int choice = 0;
-        do {
-            displayMenu();
-            choice = getChoice();
-            switch (choice) {
-            case 1:
-                addPerson();
-                break;
-            case 2:
-                deletePerson();
-                break;
-            case 3:
-                findPerson();
-                break;
-            case 4:
-                displayAll();
-            default:
-                // should not get here
-            }
-
-        } while (choice != 5);
-    }
-
+    /**
+     * Program entry point.
+     * @param args
+     */
     public static void main(String[] args) {
         new Main().run();
+
     }
+    
+
+
+    /**
+     * Reads a Person's name using a dialog box.
+     * 
+     * @return String - name read in
+     */
+    public String readName() {
+
+        final String name = JOptionPane.showInputDialog("Enter the persons name");
+
+        return (name);
+
+    }
+
+    /**
+     * Reads in a Person's data (name/phone) using two dialog boxes and creates
+     * a Person object with the data.
+     * 
+     * @return Person - person data record
+     */
+    public String readPerson() {
+        final String person;
+        final String name;
+        final String phone;
+        name = readName();// since we have a method to read the name already
+        phone = JOptionPane.showInputDialog("Enter the persons phone number");
+        if (name == null || phone == null)// make sure we have data to create a
+                                          // person
+            return null;
+        person = name + " " + phone;
+
+        return (person);
+    }
+
+    
+    /**
+     * Invokes the appropriate method on the addressBook. When the user makes
+     * their selection the Keyboard listener stores the selection value in data
+     * member "choice" and then calls this method.
+     */
+    private void evaluateChoice() {
+
+        switch (choice) {
+        case 1:
+            addPerson();
+            break;
+        case 2:
+            deletePerson();
+            break;
+        case 3:
+            findPerson();
+            break;
+        case 4:
+            displayAll();
+            break;
+        case 5:
+            System.exit(0);
+            break;
+
+        default:
+            // should not get here
+        }
+
+    }
+
+    /**
+     * Clears and draws the main menu on the window.
+     * 
+     * @param g
+     *            Graphics - device context to allow drawing on this window
+     */
+    private void displayMenu(Graphics g) {
+        Color c = this.getBackground();// colour to clear screen with
+        g.setColor(c);// use that colour
+        // colour in a rectangle the size of the window with that colour
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.setColor(Color.black);// set colour to draw with now to black
+        g.drawString("1) Add", 100, 100);
+        g.drawString("2) Delete", 100, 120);
+        g.drawString("3) Search", 100, 140);
+        g.drawString("4) Display All", 100, 160);
+        g.drawString("5) Exit", 100, 180);
+        
+    }
+
+    /**
+     * Displays the menu when window requires repainting.
+     * 
+     * @param g
+     *            Graphics - device context for the window to draw on
+     */
+    public void paint(Graphics g) {
+        displayMenu(g);
+    }
+
+
+
+    /*
+     * KeyBoardInput.
+     *
+     * A private (no one else needs access to this class) inner class (this
+     * class needs access to the GUI to handle user selections) that listens for
+     * keys pressed.
+     *
+     */
+    private class KeyBoardInput extends KeyAdapter {
+
+        /**
+         * Responds when a key is pressed on the keyboard.
+         * 
+         * @param e
+         *            KeyEvent - key pressed and other information
+         */
+        public void keyTyped(KeyEvent e) {
+            // set the "choice" data member of the outer class GUI
+            // to get the integer value, get the character value of the key
+            // pressed, make it a string and ask the Integer class to parse it
+            try {
+                choice = Integer.parseInt("" + e.getKeyChar());
+                // if it wasn't an integer key pressed then make an invalid
+                // choice
+            } catch (Exception except) {
+                choice = -1;// this will result in nothing happening
+            }
+            evaluateChoice(); // GUI method to call the addressBook to perform
+                              // task
+        }
+    }
+
+    
 }

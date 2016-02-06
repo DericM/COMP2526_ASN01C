@@ -4,33 +4,29 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.Graphics;
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.BorderLayout;
-import java.awt.*;
 
 /**
  * GUI.
  * 
- * @author your name here
- * @version
+ * @author Deric
+ * @version 1.0
  */
+@SuppressWarnings("serial")
 public class GUI extends JFrame implements UserInterface {
     private AddressBook addressBook;// interface to database
-    private int choice;// users choice 1-5
+    private String choice;// users choice 1-5
     
-    
-    /** Add button. */
+    private JPanel  menu;
     private JButton bAdd;
-    /** Delete button. */
+
     private JButton bDelete;
-    /** Display All button. */
+
     private JButton bDisplayAll;
-    /** Search button. */
+
     private JButton bSearch;
-    /** Exit button. */
+
     private JButton bExit;
-    
+
     
     
 
@@ -41,17 +37,31 @@ public class GUI extends JFrame implements UserInterface {
     public GUI() {
         setSize(400, 400);// fix window size
         setVisible(true);// make window visible
-        addKeyListener(new KeyBoardInput());// listen to keyboard input
+        
+        
+        menu = new JPanel();
+        
+        
+        
         bAdd = new JButton("Add");
         bDelete = new JButton("Delete");
-        bDisplayAll = new JButton("Display ALl");
+        bDisplayAll = new JButton("DisplayAll");
         bSearch = new JButton("Search");
         bExit = new JButton("Exit");
-        add(bAdd);
-        add(bDelete);
-        add(bDisplayAll);
-        add(bSearch);
-        add(bExit);
+        
+        
+        
+        menu.add(bAdd);
+        menu.add(bDelete);
+        menu.add(bDisplayAll);
+        menu.add(bSearch);
+        menu.add(bExit);
+        
+        
+        //addActionListener(new ButtonListener());
+        
+        add(menu);
+        
     }
 
     /**
@@ -124,19 +134,19 @@ public class GUI extends JFrame implements UserInterface {
     private void evaluateChoice() {
 
         switch (choice) {
-        case 1:
+        case "Add":
             addressBook.addPerson();
             break;
-        case 2:
+        case "Delete":
             addressBook.deletePerson();
             break;
-        case 3:
+        case "DisplayAll":
             addressBook.findPerson();
             break;
-        case 4:
+        case "Search":
             addressBook.displayAll();
             break;
-        case 5:
+        case "Exit":
             System.exit(0);
             break;
 
@@ -153,16 +163,16 @@ public class GUI extends JFrame implements UserInterface {
      *            Graphics - device context to allow drawing on this window
      */
     private void displayMenu(Graphics g) {
+        
+        this.add(menu);
         Color c = this.getBackground();// colour to clear screen with
         g.setColor(c);// use that colour
         // colour in a rectangle the size of the window with that colour
+        
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        //g.setColor(Color.black);// set colour to draw with now to black
-        //g.drawString("1) Add", 100, 100);
-        //g.drawString("2) Delete", 100, 120);
-        //g.drawString("3) Search", 100, 140);
-        //g.drawString("4) Display All", 100, 160);
-        //g.drawString("5) Exit", 100, 180);
+
+        
+        
         
     }
 
@@ -204,27 +214,22 @@ public class GUI extends JFrame implements UserInterface {
      * keys pressed.
      *
      */
-    private class KeyBoardInput extends KeyAdapter {
+    private class ButtonListener implements ActionListener {
 
-        /**
-         * Responds when a key is pressed on the keyboard.
-         * 
-         * @param e
-         *            KeyEvent - key pressed and other information
-         */
-        public void keyTyped(KeyEvent e) {
-            // set the "choice" data member of the outer class GUI
-            // to get the integer value, get the character value of the key
-            // pressed, make it a string and ask the Integer class to parse it
+
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
             try {
-                choice = Integer.parseInt("" + e.getKeyChar());
-                // if it wasn't an integer key pressed then make an invalid
-                // choice
+                JButton selectedButton = (JButton) e.getSource();
+                choice = selectedButton.getText(); 
+
             } catch (Exception except) {
-                choice = -1;// this will result in nothing happening
+                choice = "";// this will result in nothing happening
             }
             evaluateChoice(); // GUI method to call the addressBook to perform
                               // task
+            
         }
     }
 }
